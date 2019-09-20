@@ -5,7 +5,7 @@ Pipelines are segmented by EM Vendors. Currently we have data from AMR and Satli
 
 The workflows for each vendor are similiar and mostly vary in the format of the raw data. I've tried to harmonize the tables in the database
 
-## AMR
+### AMR
 
 1. HDDs with trip folders - e.g. AUCF03-12326-190506_215742.
 2. Import video metadata file into db (public.amr_file_video_metadata) - e.g. /AUCF03-12326-190506_215742/SensorData/AUCF03-12326-190506_215742IH.txt
@@ -14,5 +14,5 @@ The workflows for each vendor are similiar and mostly vary in the format of the 
 5. Make a fuzzy join between amr_catch and amr_file_video_metadata that produces a table that identifies the video file that catch event resides in. This output - amr_vid_x_catch is used as input for [extract.py](https://github.com/tnc-ca-geo/extract)
 6. extract.py creates captures still images around and event - user can input number of frames around each event to capture. This can be tricky because the declarations files tend to not be very accurate - e.g. the timestamp captured can be off by 10-20 seconds. This results in a lot of frames without interesting things in them.
 
-## Satlink
+### Satlink
 
