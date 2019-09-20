@@ -12,7 +12,12 @@ The workflows for each vendor are similiar and mostly vary in the format of the 
 3. populate vidstart_ts, vidend_ts, length, and dta_id
 4. Import 'declarations' data into db - public.amr_events. The source of these declaration files are typically private government databases. They are essentially the EM vendor deliverable to gov / agency clients.
 5. Make a fuzzy join between amr_catch and amr_file_video_metadata that produces a table that identifies the video file that catch event resides in. This output - amr_vid_x_catch is used as input for [extract.py](https://github.com/tnc-ca-geo/extract)
-6. extract.py creates captures still images around and event - user can input number of frames around each event to capture. This can be tricky because the declarations files tend to not be very accurate - e.g. the timestamp captured can be off by 10-20 seconds. This results in a lot of frames without interesting things in them.
+6. [extract.py](https://github.com/tnc-ca-geo/extract) creates captures still images around and event - user can input number of frames around each event to capture. This can be tricky because the declarations files tend to not be very accurate - e.g. the timestamp captured can be off by 10-20 seconds. This results in a lot of frames without interesting things in them.
+7. Samasource is then provided image files (S3). Those images have the label in their filename. Samasource adds bounding boxes and delivers their data as csv.
+8. That deliverable is then flattened with transform_sama_deliv.py
+9. Those data are are then imported into db (public.ofid_labels_vXXX)
+10. ofid_labels_vXXX is the source for final label files posted to [fishnet.ai](https://www.fishnet.ai)
+
 
 ### Satlink
 
