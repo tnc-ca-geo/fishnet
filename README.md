@@ -1,7 +1,7 @@
 # fishnet
 Data pipelines to support curation and distribution of fisheries data for AI applications at https://www.fishnet.ai
 
-Pipelines are segmented by EM Vendors. Currently we have data from AMR and Satlink. The pipeline is rudimentary right now and relies on a combination of python and sql. All the labels are managed in a postgresql database. At the highest level the work flow consists of receiving HDDs from EM vendors with raw video and sensor data as well as 'declarations' or 'events' files that consist of events (fish catch) within each video. The task is to extract a window of frames around each event and produce still images with labels (at the image level). Those data are then passed on to Samasource for addition of bounding boxes around the object of interst - which right not consists of fish on the deck (catch events). 
+Pipelines are segmented by EM Vendors. Currently we have data from AMR (Arcipelago Marine Resources) and Satlink. The pipeline is rudimentary right now and relies on a combination of python and sql. All the labels are managed in a postgresql database. At the highest level the work flow consists of receiving HDDs from EM vendors with raw video and sensor data as well as 'declarations' or 'events' files that consist of events (fish catch) within each video. The task is to extract a window of frames around each event and produce still images with labels (at the image level). Those data are then passed on to Samasource for addition of bounding boxes around the object of interst - which right not consists of fish on the deck (catch events). 
 
 The workflows for each vendor are similiar and mostly vary in the format of the raw data. I've tried to harmonize the tables in the database
 
