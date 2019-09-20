@@ -1,50 +1,13 @@
 
 -- #########################################################
--- ## IMPORT AND MUNGE AFMA DECLARATION DATA AND METADATA ##
+-- ## IMPORT AND MUNGE AMR DECLARATION DATA AND METADATA ##
 -- #########################################################
-/*
-select filename
-from ofvd_labels_v010
-group by filename
-*/
-
-/*
-drop table if exists labels_lookup;
-create table labels_lookup
-    (
-    id serial not null,
-    raw_label varchar,
-    code varchar,
-    label_l1 varchar,
-    lable_l2 varchar,
-    constraint labels_lookup_pkey primary key (id)
-    );
-    
-insert into labels_lookup (raw_label, label_l1)
-select raw_label, label_l1
-from fishname_lookup
-
-*/
-
-/*
-insert into labels_lookup (raw_label)
-select label_l1 
-from ofvd_labels_v010
-group by label_l1
-*/
-
-
-
-
---update afma_catch
---set dt_vid_link = to_char(ctch_dt_tm,'YYMMDD_HH24MISS')
-
 
 
 /*
-drop table if exists afma_catch;
+drop table if exists amr_events;
 set datestyle to DMY;
-create table afma_catch
+create table amr_events
     (
     c_id serial not null,
     ID integer,
@@ -65,10 +28,10 @@ create table afma_catch
     NBR_ANMLS varchar,
     CMNT varchar,
     dt_vid_link,
-    constraint afma_catch_pkey primary key (c_id)
+    constraint amr_events_pkey primary key (c_id)
     );
 
-copy afma_catch
+copy amr_events
     (
     ID,
     EM_FSHG_HL_ID,
@@ -97,27 +60,24 @@ from '/Users/mmerrifield/Projects/fishnet/data/afma/declarations/66967_Catch.csv
 --## Update video metadata table with start, length, and end times
 --#################################################################
 
---update afma_video_file_metadata
---set vidstart_dt_tm = to_timestamp (left(split_part((split_part(fname, '-',6)),'(',1), 13),'YYMMDD_HH24MISS')
+--update amr_video_file_metadata
+--set vidstart_ts = to_timestamp (left(split_part((split_part(fname, '-',6)),'(',1), 13),'YYMMDD_HH24MISS')
 --where count = 0
 
---update afma_video_file_metadata
+--update amr_video_file_metadata
 --set length_char = length_hrs::varchar || ' hours'
 --where count = 0
 
---update afma_video_file_metadata
+--update amr_video_file_metadata
 --set vidend_dt_tm = vidstart_dt_tm + length_char::interval
 --where count = 0
 
 
 
-
-
-
 /*
-drop table if exists afma_video_file_metadata;
+drop table if exists amr_video_file_metadata;
 
-create table afma_video_file_metadata
+create table amr_video_file_metadata
     (
         id serial not null,
     count integer,
@@ -136,7 +96,7 @@ create table afma_video_file_metadata
     constraint afma_video_file_metadata_pkey primary key (id)
     );
 
-copy afma_video_file_metadata
+copy amr_video_file_metadata
     (
     count,
     fname,
