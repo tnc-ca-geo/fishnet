@@ -60,20 +60,6 @@ from '/Users/mmerrifield/Projects/fishnet/data/afma/declarations/66967_Catch.csv
 --## Update video metadata table with start, length, and end times
 --#################################################################
 
---update amr_video_file_metadata
---set vidstart_ts = to_timestamp (left(split_part((split_part(fname, '-',6)),'(',1), 13),'YYMMDD_HH24MISS')
---where count = 0
-
---update amr_video_file_metadata
---set length_char = length_hrs::varchar || ' hours'
---where count = 0
-
---update amr_video_file_metadata
---set vidend_dt_tm = vidstart_dt_tm + length_char::interval
---where count = 0
-
-
-
 /*
 drop table if exists amr_video_file_metadata;
 
@@ -114,6 +100,49 @@ copy amr_video_file_metadata
 from '/Users/mmerrifield/Projects/fishnet/data/afma/012455-181005-sensor-data/AUCF03-012455-181005_064134IH.txt'csv header
 
 */
+
+
+--update amr_video_file_metadata
+--set vidstart_ts = to_timestamp (left(split_part((split_part(fname, '-',6)),'(',1), 13),'YYMMDD_HH24MISS')
+--where count = 0
+
+--update amr_video_file_metadata
+--set length_char = length_hrs::varchar || ' hours'
+--where count = 0
+
+--update amr_video_file_metadata
+--set vidend_ts = vidstart_ts + length_char::interval
+--where count = 0
+
+
+
+--drop table if exists amr_vid_x_catch;
+insert into amr_vid_x_catch(fname,cam_num,vidstart_ts,catch_ts,vidend_ts,label_l1,label_l2)
+
+select 
+	meta.fname || '.MP4' as fname, 
+	meta.cam as cam_num,
+	meta.vidstart_ts,
+	events.ctch_dt_tm as catch_ts, 
+	meta.vidend_ts,
+	lu.label_l1 as label_l1,
+	lu.label_l2 as label_l2
+	
+
+
+from amr_video_file_metadata meta
+
+	-- this makes a fuzzy join by looking for all the catch events that fall between the video start and 10 seconds before the end time
+	left join amr_events events on events.ctch_dt_tm between meta.vidstart_ts and meta.vidend_ts - interval '10 sec'
+	left join labels_lookup lu on lu.raw_label = events.std_name
+	
+where label_l1 is not null 
+	and meta.dta_id = 'AUCF03-012029-181111_202044'
+	--and meta.dta_id = 'AUCF03-012455-181005_064134'
+order by ctch_dt_tm asc;
+
+
+
 
 
 
