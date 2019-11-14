@@ -1,9 +1,10 @@
 # Flatten annotation delivery files from Samasource
-# csv files are delivered with all annotation (bboxes, tag) compressed into 
+# csv files are delivered with all annotation (bboxes, tag) compressed into
 # a single "output" field. This script parses those objects into rows
 # such that each bbox has its own row with a repeating image name
 
-
+# standard library
+import argparse
 import csv
 import json
 from operator import lt, gt
@@ -46,23 +47,54 @@ def row_generator(path):
         for row in reader:
             outputs = json.loads(row['Output'])
             for item in outputs:
-                formatted_item = { 'task_id': row['task_id'],'name': row['name'], 'url': row['url']}
+                formatted_item = {
+                    'task_id': row['task_id'], 'name': row['name'],
+                    'url': row['url']}
                 formatted_item.update(format_item(item))
                 yield formatted_item
 
 
-def convert(input_file_path, output_file_path):
-    with open(OUTPUT_PATH, 'w') as output_file:
+def new_generator(path):
+    with open(path) as input_file:
+        reader = csv.DictReader(input_file, delimiter=',')
+        for row in reader:
+            annotations = json.loads(row['Annotation'])
+            for record in annotations['layers']['vector_tagging']:
+                for item in record['shapes']:
+                    formatted_item = {
+                        'task_id': row['task_id'], 'name': row['name'],
+                        'url': row['url']}
+                    formatted_item.update(format_item(item))
+                    yield formatted_item
+
+
+def convert(input_file_path, output_file_path, generator=row_generator):
+    with open(output_file_path, 'w') as output_file:
         fieldnames = [
-            'task_id', 'name', 'url', 'bbox_id', 'xmin', 'xmax', 'ymin', 'ymax', 'label_name']
+            'task_id', 'name', 'url', 'bbox_id', 'xmin', 'xmax', 'ymin',
+            'ymax', 'label_name']
         writer = csv.DictWriter(output_file, fieldnames=fieldnames)
         writer.writeheader()
-        for row in row_generator(INPUT_PATH):
+        for row in generator(input_file_path):
             writer.writerow(row)
 
 
 def main():
-    convert(INPUT_PATH, OUTPUT_PATH)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-i', '--input', help='Input file', type=str, default=INPUT_PATH)
+    parser.add_argument(
+        '-o', '--output', help='Output file', type=str, default=None)
+    parser.add_argument(
+        '-g', '--new_generator', help='Use newer schema', action='store_true')
+    args = parser.parse_args()
+    input_path = os.path.abspath(args.input)
+    output_path = os.path.abspath(
+        args.output or args.input.replace('.csv', '_flatten.csv'))
+    if not args.new_generator:
+        convert(input_path, output_path)
+    else:
+        convert(input_path, output_path, generator=new_generator)
 
 
 if __name__ == '__main__':
