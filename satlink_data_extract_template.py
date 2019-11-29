@@ -61,9 +61,9 @@ def get_event_images(event):
                 '-t',
                 EVT_DURATION,
                 '-vf',
-                'fps=2,crop=in_w:in_h-50:0:50',
+                f'fps={FRAME_RATE},crop=in_w:in_h-50:0:50',
                 '-qscale:v',
-                FRAME_RATE,
+                2,
                 out_dir + out_base + '_%03d.jpg' 
             ]
             subprocess.call(cmd)
