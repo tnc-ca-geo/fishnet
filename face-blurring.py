@@ -1,5 +1,7 @@
 """
-This script will take a csv file that contains bounding box information for faces contained in images, saves a copy of the original image, and blurs the face bounding box locations using a box filter defined by cv2.blur(). The expected format of the csv file is one row per face annotation, the first row contains header labels, with the following labels:
+This script will take a csv file that contains bounding box information for faces contained in images, 
+saves a copy of the original image, and blurs the face bounding box locations using a box filter defined by cv2.blur(). 
+The expected format of the csv file is one row per face annotation, the first row contains header labels, with the following labels:
 
 img_name - full path to the image file
 bbox_id - not important
@@ -20,9 +22,9 @@ import os
 from tqdm import tqdm
 
 # Directory to store duplicate images
-DUPE_DIR = ""
+DUPE_DIR = "/home/devuser/projects/fishnet/data/amr/udz3/faces/dupes/"
 # Path to csv file containing face annotations
-CSV_FILE = ""
+CSV_FILE = "/home/devuser/projects/fishnet/data/amr/udz3/faces/udz3-faces-bbox.csv"
 
 def calc_padded_box(img_face, img):
     '''Calculate bounding box location padded by 10%
@@ -43,6 +45,8 @@ if __name__=="__main__":
     unique_images = faces['img_name'].unique()
 
     for img_name in tqdm(unique_images):
+        img_path,img_name = os.path.split(img_name)
+        img_name = os.path.join(img_path,img_name)
         print(f"Processing image {img_name}")
         img_faces = faces.loc[faces['img_name'] == img_name]
         print(img_faces)
@@ -51,7 +55,7 @@ if __name__=="__main__":
         img = cv2.imread(img_name)
         for img_face in img_faces.itertuples():
             x1,x2,y1,y2 = calc_padded_box(img_face, img)
-            img[y1:y2,x1:x2] = cv2.blur(img[y1:y2,x1:x2], (30,30))
+            img[y1:y2,x1:x2] = cv2.blur(img[y1:y2,x1:x2],(30,30))
         cv2.imwrite(img_name,img)
 
 #Debug code for visualizing a bounding box
