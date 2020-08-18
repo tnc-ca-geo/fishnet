@@ -1,5 +1,7 @@
 """
-This script will take a csv file that contains bounding box information for faces contained in images, saves a copy of the original image, and blurs the face bounding box locations using a box filter defined by cv2.blur(). The expected format of the csv file is one row per face annotation, the first row contains header labels, with the following labels:
+This script will take a csv file that contains bounding box information for faces contained in images, 
+saves a copy of the original image, and blurs the face bounding box locations using a box filter defined by cv2.blur(). 
+The expected format of the csv file is one row per face annotation, the first row contains header labels, with the following labels:
 
 img_name - full path to the image file
 bbox_id - not important
