@@ -22,19 +22,19 @@ import os
 from tqdm import tqdm
 
 # Directory to store duplicate images
-DUPE_DIR = "/home/devuser/projects/fishnet/data/amr/udz3/faces/dupes/"
+DUPE_DIR = "/home/devuser/projects/fishnet/data/satlink/udz3-r2/faces/dupes/"
 # Path to csv file containing face annotations
-CSV_FILE = "/home/devuser/projects/fishnet/data/amr/udz3/faces/udz3-faces-bbox.csv"
+CSV_FILE = "/home/devuser/projects/fishnet/data/satlink/udz3-r2/faces/udz3-r2-faces-bbox.csv"
 
 def calc_padded_box(img_face, img):
     '''Calculate bounding box location padded by 10%
     '''
-    x1,x2,y1,y2 = [img_face.x_min, img_face.x_max, img_face.y_min, img_face.y_max]
+    x1,x2,y1,y2 = [int(img_face.x_min),int(img_face.x_max),int(img_face.y_min),int(img_face.y_max)]
     #Add in 10% expansion here, and image edge safeguards
-    x1 = (x1 - (img_face.w) * 0.05, 0) [x1 - (img_face.w) * 0.05 < 0]
-    x2 = (x2 + (img_face.w) * 0.05, img.shape[1]) [x2 + (img_face.w) * 0.05 > img.shape[1]]
-    y1 = (y1 - (img_face.h) * 0.05, 0) [y1 - (img_face.h) * 0.05 < 0]
-    y2 = (y2 + (img_face.h) * 0.05, img.shape[0]) [y2 + (img_face.h) * 0.05 > img.shape[0]]
+    x1 = int((x1 - (img_face.w) * 0.05, 0) [x1 - (img_face.w) * 0.05 < 0])
+    x2 = int((x2 + (img_face.w) * 0.05, img.shape[1]) [x2 + (img_face.w) * 0.05 > img.shape[1]])
+    y1 = int((y1 - (img_face.h) * 0.05, 0) [y1 - (img_face.h) * 0.05 < 0])
+    y2 = int((y2 + (img_face.h) * 0.05, img.shape[0]) [y2 + (img_face.h) * 0.05 > img.shape[0]])
     return x1,x2,y1,y2
 
 if __name__=="__main__":
